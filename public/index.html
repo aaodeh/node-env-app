@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Coming Soon 4</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" href="images/icons/favicon.ico" />
+    <!--===============================================================================================-->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="vendor/bootstrap/css/bootstrap.min.css"
+    />
+    <!--===============================================================================================-->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="fonts/font-awesome-4.7.0/css/font-awesome.min.css"
+    />
+    <!--===============================================================================================-->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="fonts/iconic/css/material-design-iconic-font.min.css"
+    />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css" />
+    <!--===============================================================================================-->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="vendor/select2/select2.min.css"
+    />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="css/util.css" />
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <!--===============================================================================================-->
+  </head>
+  <body>
+    <div
+      class="bg-g1 size1 flex-w flex-col-c-sb p-l-15 p-r-15 p-t-55 p-b-35 respon1"
+    >
+      <span></span>
+      <div class="flex-col-c p-t-50 p-b-50 timer">
+        <h3 class="l1-txt1 txt-center p-b-10">Demo App</h3>
+
+        <p class="txt-center l1-txt2 p-b-60">
+          Our
+          <span id="env" class="l1-txt4 txt-center p-b-10"></span> environment
+          has been running for ...
+        </p>
+
+        <div class="flex-w flex-c cd100 p-b-82">
+          <div class="flex-col-c-m size2 how-countdown">
+            <span class="l1-txt3 p-b-9 days"></span>
+            <span class="s1-txt1">Days</span>
+          </div>
+
+          <div class="flex-col-c-m size2 how-countdown">
+            <span class="l1-txt3 p-b-9 hours">17</span>
+            <span class="s1-txt1">Hours</span>
+          </div>
+
+          <div class="flex-col-c-m size2 how-countdown">
+            <span class="l1-txt3 p-b-9 minutes">50</span>
+            <span class="s1-txt1">Minutes</span>
+          </div>
+
+          <div class="flex-col-c-m size2 how-countdown">
+            <span class="l1-txt3 p-b-9 seconds"></span>
+            <span class="s1-txt1">Seconds</span>
+          </div>
+        </div>
+      </div>
+
+      <span class="s1-txt3 txt-center"> @ 2024 Demo App </span>
+    </div>
+
+    <!--===============================================================================================-->
+    <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="vendor/bootstrap/js/popper.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="vendor/select2/select2.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="vendor/countdowntime/moment.min.js"></script>
+    <script src="vendor/countdowntime/moment-timezone.min.js"></script>
+    <script src="vendor/countdowntime/moment-timezone-with-data.min.js"></script>
+    <script src="vendor/countdowntime/countdowntime.js"></script>
+    <script>
+      (function ($) {
+        "use strict";
+
+        $.fn.extend({
+          countup100: function (options) {
+            var defaults = {
+              startTime: new Date(), // Default start time is now
+            };
+
+            var options = $.extend(defaults, options);
+
+            return this.each(function () {
+              var obj = $(this);
+              var startTime = options.startTime;
+
+              initializeClock(startTime);
+
+              function getTimeElapsed(starttime) {
+                var t = Date.parse(new Date()) - Date.parse(starttime);
+                var seconds = Math.floor((t / 1000) % 60);
+                var minutes = Math.floor((t / 1000 / 60) % 60);
+                var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+                var days = Math.floor(t / (1000 * 60 * 60 * 24));
+                return {
+                  total: t,
+                  days: days,
+                  hours: hours,
+                  minutes: minutes,
+                  seconds: seconds,
+                };
+              }
+
+              function initializeClock(starttime) {
+                var daysSpan = $(obj).find(".days");
+                var hoursSpan = $(obj).find(".hours");
+                var minutesSpan = $(obj).find(".minutes");
+                var secondsSpan = $(obj).find(".seconds");
+
+                function updateClock() {
+                  var t = getTimeElapsed(starttime);
+
+                  daysSpan.html(("0" + t.days).slice(-2));
+                  hoursSpan.html(("0" + t.hours).slice(-2));
+                  minutesSpan.html(("0" + t.minutes).slice(-2));
+                  secondsSpan.html(("0" + t.seconds).slice(-2));
+                }
+
+                updateClock();
+                var timeinterval = setInterval(updateClock, 1000);
+              }
+            });
+          },
+        });
+
+        $(document).ready(function () {
+          $(".timer").countup100({
+            startTime: new Date(Date.parse(new Date()) - 0), // You can set the start time here
+          });
+
+          fetch("/api/environment")
+            .then((response) => response.json())
+            .then((data) => {
+              document.getElementById("env").textContent = data.environment;
+            });
+        });
+      })(jQuery);
+    </script>
+    <!--===============================================================================================-->
+    <script src="vendor/tilt/tilt.jquery.min.js"></script>
+    <script>
+      $(".js-tilt").tilt({
+        scale: 1.1,
+      });
+    </script>
+    <!--===============================================================================================-->
+    <script src="js/main.js"></script>
+    <script>
+      fetch("/api/environment")
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById("env").textContent = data.environment;
+        });
+    </script>
+  </body>
+</html>
